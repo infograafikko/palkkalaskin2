@@ -1,22 +1,35 @@
 <!DOCTYPE html>
 <head>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.4.0/d3.min.js"></script>
-    <link rel="stylesheet" href="style/style.css">    
+    <script src="https://cdn.bootcss.com/noUiSlider/8.5.1/nouislider.js"></script>
+    <link href="https://cdn.bootcss.com/noUiSlider/8.5.1/nouislider.min.css" rel="stylesheet">    
+    <link rel="stylesheet" href="style/style.css">
+    <script src="scripts/main.js"></script>
+    <script src="scripts/wNumb.js"></script>    
     <meta charset="UTF-8">    
 </head>
 <body>
-        <div id="salary-wrapper" class="form-group">
-                <label for="salary" class="control-label">Syötä kuukausitulosi</label>
-            
-                <div class="addon-wrapper">
-                    <div class="addon">€</div>
-                <div class="input-salary-wrapper">
-                    <input type="text" name="salary" id="salary" pattern="[0-9]*" class="" style="text-align: right;">
-                    </div>
-                </div>    
+    <div id="salary-wrapper" class="form-group">
+        <label for="salary" class="control-label">Syötä kuukausitulosi</label>
+    
+        <div class="addon-wrapper">
+            <div class="addon">€</div>
+        <div class="input-salary-wrapper">
+            <input type="text" name="salary" id="salary" pattern="[0-9]*" class="" style="text-align: right;"><div id="salary-value"></div>
             </div>
-    <div id="slidecontainer">
-        <input type="range" min="1" max="20000" value="3000" class="slider" id="salaryRange">
+        </div>    
     </div>
-
+    <div id="slider-step"></div>
+    <div id="sektori">
+        <select class="pinkSelect">
+                <option value="kaikki">Kaikki</option>
+                <option value="yksityinen">Yksityinen</option>
+                <option value="julkinen">Julkinen</option>
+                <option value="jarjesto">Järjestö, liitto, säätiö</option>
+                <option value="viestinta">Viestintä-, mainos- ja mediatoimisto</option>        
+        </select>
+    </div>
+    <div id="calc">
+        <button class="playCalc">Vertaa palkkaasi</button>
+    </div>
 </body>
