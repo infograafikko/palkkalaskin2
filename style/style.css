@@ -130,7 +130,7 @@ select.pinkSelect {
   -webkit-appearance:none; /* Safari and Chrome */
 }
 
-.playCalc {
+#playCalc {
     color: white;
     width: 300px;
     margin-top: 10px;
@@ -140,4 +140,9 @@ select.pinkSelect {
     padding: 10px 10px 10px 10px;
     border-radius: 4px;
     
+}
+
+#salary-text {
+    margin-top:10px;
+    font-size: 125%;
 }
