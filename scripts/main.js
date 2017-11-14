@@ -40,13 +40,18 @@ inputFormat.addEventListener('change', function(){
 var e = document.getElementById("sektoriValue");
 var sektoriValue = e.options[e.selectedIndex].value;
 
+//Rounding function
+function round(value, decimals) {
+  return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
+}
+
 //////////////////////
 //Let's visualize it//
 //////////////////////
 
 // set the dimensions and margins of the graph
-var margin = {top: 20, right: 20, bottom: 30, left: 50},
-    width = 960 - margin.left - margin.right,
+var margin = {top: 30, right: 80, bottom: 30, left: 50},
+    width = 500 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
 
 // set the ranges
@@ -143,8 +148,13 @@ var g = svg.append("g")
 
       //Display text
       var editSalarytext = document.getElementById("salary-text");
-      editSalarytext.innerHTML = "Tienaat enemmän kuin " + Math.round(smallerPCT) + " % viestinnän alan palkansaajista.";
+      editSalarytext.innerHTML = "Syöttämälläsi palkalla ja kriteereillä tienaisit enemmän kuin " + Math.round(smallerPCT) + " % viestinnän alan palkansaajista.";
       editSalarytext.style.display = "block";
+
+      //Display text
+      var editSalarytopic = document.getElementById("salary-topic");
+      editSalarytopic.innerHTML = "Viestinnän palkat, kumulatiivinen (" + sektoriValue + ")";
+      editSalarytopic.style.display = "block";
       
       console.log(data);
       
@@ -171,6 +181,9 @@ var g = svg.append("g")
         
         graphData.push(obj)
       }
+
+      console.log(graphData)
+      
 
       
       ///////////////////////
@@ -204,6 +217,21 @@ var g = svg.append("g")
         svg.append("g")
           .call(d3.axisLeft(y));
 
+        // Add the userSalaryLine
+        var userSalaryLine = svg.append("g")
+          .attr("class", "userSalaryLine");
+
+        userSalaryLine.append("line")
+          .attr("y1", y(smallerPCT))
+          .attr("y2", y(smallerPCT))
+          .attr("x1", x(userSalary))
+          .attr("x2", 0);
+
+        userSalaryLine.append("circle")
+          .attr("cx", x(userSalary))
+          .attr("cy", y(smallerPCT))
+          .attr("r", 3)
+          .attr("fill", "black")
       
       
       var focus = svg.append("g")
