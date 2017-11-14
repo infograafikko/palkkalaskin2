@@ -53,7 +53,7 @@ function getRatio (side) {
 }
 
 // set the dimensions and margins of the graph
-var margin = {left: 50, top: 50, right: 80, bottom: 60}
+var margin = {left: 42, top: 50, right: 80, bottom: 60}
     width = 900;
     height = 400;
 
