@@ -190,3 +190,31 @@ select.pinkSelect {
     stroke-width: 2px;
     stroke-dasharray: 3,3;
   }
+
+#chart {
+  max-width: 900px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+#svg-container {
+    position: relative;
+    width: 100%;
+    padding-bottom: 100%;
+    overflow: hidden;
+}
+#svg-content-responsive {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.xaxis {
+    font-family: "Raleway", sans-serif;
+    font-size: 125%;
+}
+
+.yaxis {
+    font-family: "Raleway", sans-serif;
+    font-size: 125%;
+}

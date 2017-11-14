@@ -48,13 +48,25 @@ function round(value, decimals) {
 }
 
 //////////////////////
-//Let's visualize it//
+//Let's use d3.js   //
 //////////////////////
 
+//Get ratio
+function getRatio (side) {
+  return ((margin[side] / width) * 100) + '%'
+}
+
 // set the dimensions and margins of the graph
-var margin = {top: 80, right: 80, bottom: 30, left: 50},
-    width = 900 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
+var margin = {left: 40, top: 45, right: 80, bottom: 30}
+    width = 900;
+    height = 400;
+
+var marginRatio = {
+  left: getRatio('left'),
+  top: getRatio('top'),
+  right: getRatio('right'),
+  bottom: getRatio('bottom')
+}
 
 // set the ranges
 var x = d3.scaleLinear().range([0, width]);
@@ -81,13 +93,20 @@ var bisectSalary = d3.bisector(function(d) { return d.salary; }).left;
 // appends a 'group' element to 'svg'
 // moves the 'group' element to the top left margin
 
-var svg = d3.select("body").append("svg")
-.attr("width", width + margin.left + margin.right)
-.attr("height", height + margin.top + margin.bottom)
-.append("g")
-.attr("transform",
-      "translate(" + margin.left + "," + margin.top + ")");
+var svg = d3.select("div#chart")
+  .append("div")
+  .attr("id", "svg-container") //container class to make it responsive
+  .append("svg")
+  // Add margin to show axes
+  .style('padding', marginRatio.top + ' ' + marginRatio.right + ' ' + marginRatio.bottom + ' ' + marginRatio.left)
+  //responsive SVG needs these 2 attributes and no width and height attr
+  .attr("preserveAspectRatio", "xMinYMin meet")
+  .attr('viewBox', '0 0 ' + (width + margin.left + margin.right) + ' ' + (height + margin.top + margin.bottom))
+  //class to make it responsive
+  .attr("id", "svg-content-responsive");
 
+  svg = svg.append("g")
+  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 
     d3.csv("data/palkkadata2.csv", function(error, data) {      
@@ -215,12 +234,14 @@ var svg = d3.select("body").append("svg")
 
         // Add the X Axis
         svg.append("g")
+          .attr("class", "xaxis")
           .attr("transform", "translate(0," + height + ")")
           .call(d3.axisBottom(x));
 
         // Add the Y Axis
         svg.append("g")
-          .call(d3.axisLeft(y));
+          .call(d3.axisLeft(y))
+          .attr("class", "yaxis")
 
         // Add the userSalaryLine
         var userSalaryLine = svg.append("g")
