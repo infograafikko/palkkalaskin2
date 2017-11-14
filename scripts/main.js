@@ -53,7 +53,7 @@ function getRatio (side) {
 }
 
 // set the dimensions and margins of the graph
-var margin = {left: 42, top: 50, right: 80, bottom: 60}
+var margin = {left: 42, top: 55, right: 80, bottom: 60}
     width = 900;
     height = 400;
 
@@ -160,10 +160,21 @@ var svg = d3.select("div#chart")
 
       //Count how many smaller by percentage
       var smallerPCT = (smaller / data.length) * 100;
+      smallerPCT = Math.round(smallerPCT);
+
+      var smallerPCTtext;
+
+      if (smallerPCT > 99) {
+        smallerPCTtext = "> 99";
+      } else if (smallerPCT < 1) {
+        smallerPCTtext = "< 1";
+      } else {
+        smallerPCTtext = smallerPCT;
+      }
 
       //Display text
       var editSalarytext = document.getElementById("salary-text");
-      editSalarytext.innerHTML = "Tienaat enemmän kuin " + Math.round(smallerPCT) + " % viestinnän alan palkansaajista.";
+      editSalarytext.innerHTML = "Tienaat enemmän kuin " + smallerPCTtext + " % viestinnän alan palkansaajista.";
       editSalarytext.style.display = "block";
 
       //Display text
@@ -265,9 +276,9 @@ var svg = d3.select("div#chart")
           .attr("font-size", "150%")
 
         userPctText.append("text")
-          .attr("x", x(userSalary) + 10)
+          .attr("x", x(userSalary) + 15)
           .attr("y", y(smallerPCT) + 5)
-          .text(Math.round(smallerPCT) + " %")
+          .text(smallerPCTtext + " %")
           
         var userSalaryRect = svg.append("g")
           .attr("class", "userSalaryRect")
@@ -286,7 +297,7 @@ var svg = d3.select("div#chart")
           .attr("class", "userSalaryText")
 
         userSalaryText.append("text")
-          .attr("x", x(userSalary) - 40)
+          .attr("x", x(userSalary) - 45)
           .attr("y", -20)
           .text(sliderFormat.noUiSlider.get() + " €")
           .attr("fill", "black")
