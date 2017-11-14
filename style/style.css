@@ -146,3 +146,30 @@ select.pinkSelect {
     margin-top:10px;
     font-size: 125%;
 }
+
+.line {
+    fill: none;
+    stroke: darkgray;
+    stroke-width: 2px;
+  }
+  
+  .area {
+    fill: lightgray;
+  }
+
+  .overlay {
+    fill: none;
+    pointer-events: all;
+  }
+  
+  .focus circle {
+    fill: #e30577;
+    stroke: #e30577;
+    stroke-width: 0px;
+  }
+    
+  .hover-line {
+    stroke: #e30577;
+    stroke-width: 2px;
+    stroke-dasharray: 3,3;
+  }
