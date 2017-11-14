@@ -42,10 +42,6 @@ inputFormat.addEventListener('change', function(){
 var e = document.getElementById("sektoriValue");
 var sektoriValue = e.options[e.selectedIndex].value;
 
-//Rounding function
-function round(value, decimals) {
-  return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
-}
 
 //////////////////////
 //Let's use d3.js   //
@@ -57,7 +53,7 @@ function getRatio (side) {
 }
 
 // set the dimensions and margins of the graph
-var margin = {left: 40, top: 45, right: 80, bottom: 30}
+var margin = {left: 20, top: 20, right: 80, bottom: 60}
     width = 900;
     height = 400;
 
@@ -106,7 +102,7 @@ var svg = d3.select("div#chart")
   .attr("id", "svg-content-responsive");
 
   svg = svg.append("g")
-  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+  .attr("transform", "translate(" + 42 + "," + 50 + ")");
 
 
     d3.csv("data/palkkadata2.csv", function(error, data) {      
@@ -258,14 +254,15 @@ var svg = d3.select("div#chart")
         .attr("class", "userSalaryCircle");
 
         userSalaryCircle.append("circle")
-          .attr("cx", x(userSalary))
+          .attr("cx", x(userSalary + 5))
           .attr("cy", y(smallerPCT))
-          .attr("r", 7.5)
+          .attr("r", 10)
           .attr("fill", "#e30577")
     
         // Add soon to be dynamic features,. pctText
         var userPctText = svg.append("g")
           .attr("class", "userPctText")
+          .attr("font-size", "150%")
 
         userPctText.append("text")
           .attr("x", x(userSalary) + 10)
@@ -276,10 +273,10 @@ var svg = d3.select("div#chart")
           .attr("class", "userSalaryRect")
 
         userSalaryRect.append("rect")
-          .attr("x", x(userSalary) - 40)
-          .attr("y", -40)
-          .attr("width", 80)
-          .attr("height", 30)
+          .attr("x", x(userSalary) - 45)
+          .attr("y", -45)
+          .attr("width", 120)
+          .attr("height", 35)
           .attr("fill", "lightgray")
           .attr("rx", 15)
           .attr("ry", 15)
@@ -292,7 +289,8 @@ var svg = d3.select("div#chart")
           .attr("x", x(userSalary) - 30)
           .attr("y", -20)
           .text(sliderFormat.noUiSlider.get() + " €")
-          .attr("fill", "gray");
+          .attr("fill", "black")
+          .attr("font-size", "150%");
 
 
       //var min =  d3.max(data, function(d) { return d.q27a; });    
