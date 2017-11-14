@@ -53,7 +53,7 @@ function getRatio (side) {
 }
 
 // set the dimensions and margins of the graph
-var margin = {left: 20, top: 20, right: 80, bottom: 60}
+var margin = {left: 50, top: 50, right: 80, bottom: 60}
     width = 900;
     height = 400;
 
@@ -102,7 +102,7 @@ var svg = d3.select("div#chart")
   .attr("id", "svg-content-responsive");
 
   svg = svg.append("g")
-  .attr("transform", "translate(" + 42 + "," + 50 + ")");
+  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 
     d3.csv("data/palkkadata2.csv", function(error, data) {      
@@ -273,7 +273,7 @@ var svg = d3.select("div#chart")
           .attr("class", "userSalaryRect")
 
         userSalaryRect.append("rect")
-          .attr("x", x(userSalary) - 45)
+          .attr("x", x(userSalary) - 60)
           .attr("y", -45)
           .attr("width", 120)
           .attr("height", 35)
@@ -286,7 +286,7 @@ var svg = d3.select("div#chart")
           .attr("class", "userSalaryText")
 
         userSalaryText.append("text")
-          .attr("x", x(userSalary) - 30)
+          .attr("x", x(userSalary) - 40)
           .attr("y", -20)
           .text(sliderFormat.noUiSlider.get() + " €")
           .attr("fill", "black")
