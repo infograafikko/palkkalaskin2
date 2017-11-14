@@ -31,6 +31,8 @@ inputFormat.addEventListener('change', function(){
   var calcButton = document.getElementById('playCalc');
   calcButton.onclick = function() {
 
+
+
     //Convert userSalary to number
     var userSalary = sliderFormat.noUiSlider.get();
     userSalary = userSalary.split(' ').join('');
@@ -50,8 +52,8 @@ function round(value, decimals) {
 //////////////////////
 
 // set the dimensions and margins of the graph
-var margin = {top: 30, right: 80, bottom: 30, left: 50},
-    width = 500 - margin.left - margin.right,
+var margin = {top: 80, right: 80, bottom: 30, left: 50},
+    width = 900 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
 
 // set the ranges
@@ -74,11 +76,11 @@ var area = d3.area()
     
 //Bisector for tooltip
 var bisectSalary = d3.bisector(function(d) { return d.salary; }).left;
-    
 
 // append the svg obgect to the body of the page
 // appends a 'group' element to 'svg'
 // moves the 'group' element to the top left margin
+
 var svg = d3.select("body").append("svg")
 .attr("width", width + margin.left + margin.right)
 .attr("height", height + margin.top + margin.bottom)
@@ -86,8 +88,6 @@ var svg = d3.select("body").append("svg")
 .attr("transform",
       "translate(" + margin.left + "," + margin.top + ")");
 
-var g = svg.append("g")
-  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 
     d3.csv("data/palkkadata2.csv", function(error, data) {      
@@ -148,14 +148,19 @@ var g = svg.append("g")
 
       //Display text
       var editSalarytext = document.getElementById("salary-text");
-      editSalarytext.innerHTML = "Syöttämälläsi palkalla ja kriteereillä tienaisit enemmän kuin " + Math.round(smallerPCT) + " % viestinnän alan palkansaajista.";
+      editSalarytext.innerHTML = "Tienaat enemmän kuin " + Math.round(smallerPCT) + " % viestinnän alan palkansaajista.";
       editSalarytext.style.display = "block";
 
       //Display text
       var editSalarytopic = document.getElementById("salary-topic");
-      editSalarytopic.innerHTML = "Viestinnän palkat, kumulatiivinen (" + sektoriValue + ")";
+      editSalarytopic.innerHTML = "Viestinnän palkat, kumulatiivinen, % (" + sektoriValue + ")";
       editSalarytopic.style.display = "block";
+
+      //Display filtering
+     // var editSalaryFilter= document.getElementById("filter");
+     // editSalaryFilter.style.display = "block";
       
+
       console.log(data);
       
       //////
@@ -220,65 +225,54 @@ var g = svg.append("g")
         // Add the userSalaryLine
         var userSalaryLine = svg.append("g")
           .attr("class", "userSalaryLine");
-
+        
         userSalaryLine.append("line")
-          .attr("y1", y(smallerPCT))
-          .attr("y2", y(smallerPCT))
+          .attr("y1", -20)
+          .attr("y2", height)
           .attr("x1", x(userSalary))
-          .attr("x2", 0);
+          .attr("x2", x(userSalary));
 
-        userSalaryLine.append("circle")
+        // Add the userSalaryCircle
+        var userSalaryCircle = svg.append("g")
+        .attr("class", "userSalaryCircle");
+
+        userSalaryCircle.append("circle")
           .attr("cx", x(userSalary))
           .attr("cy", y(smallerPCT))
-          .attr("r", 3)
-          .attr("fill", "black")
-      
-      
-      var focus = svg.append("g")
-        .attr("class", "focus")
-        .style("display", "none");
-  
-      focus.append("line")
-          .attr("class", "x-hover-line hover-line")
-          .attr("y1", 0)
-          .attr("y2", height);
-  
-      focus.append("line")
-          .attr("class", "y-hover-line hover-line")
-          .attr("x1", width)
-          .attr("x2", width);
-  
-      focus.append("circle")
-          .attr("r", 7.5);
-  
-      focus.append("text")
-          .attr("x", 15)
-          .attr("dy", ".31em");
-  
-      svg.append("rect")
-          .attr("transform", "translate(" + 0 + "," + margin.top + ")")
-          .attr("class", "overlay")
-          .attr("width", width)
-          .attr("height", height)
-          .on("mouseover", function() { focus.style("display", null); })
-          .on("mouseout", function() { focus.style("display", "none"); })
-          .on("mousemove", mousemove);
-  
-      function mousemove() {
-        var x0 = x.invert(d3.mouse(this)[0]),
-            i = bisectSalary(graphData, x0, 1),
-            d0 = graphData[i - 1],
-            d1 = graphData[i],
-            d = x0 - d0.year > d1.year - x0 ? d1 : d0;
-        focus.attr("transform", "translate(" + x(d.salary) + "," + y(d.cumulativepct) + ")");
-        focus.select("text").text(function() { return Math.round(d.cumulativepct) + " %"; });
-        focus.select(".x-hover-line").attr("y2", height - y(d.cumulativepct));
-        focus.select(".y-hover-line").attr("x2", width + width);
-      }
+          .attr("r", 7.5)
+          .attr("fill", "#e30577")
+    
+        // Add soon to be dynamic features,. pctText
+        var userPctText = svg.append("g")
+          .attr("class", "userPctText")
 
+        userPctText.append("text")
+          .attr("x", x(userSalary) + 10)
+          .attr("y", y(smallerPCT) + 5)
+          .text(Math.round(smallerPCT) + " %")
+          
+        var userSalaryRect = svg.append("g")
+          .attr("class", "userSalaryRect")
 
+        userSalaryRect.append("rect")
+          .attr("x", x(userSalary) - 40)
+          .attr("y", -40)
+          .attr("width", 80)
+          .attr("height", 30)
+          .attr("fill", "lightgray")
+          .attr("rx", 15)
+          .attr("ry", 15)
 
-        console.log(userSalary);
+        
+        var userSalaryText = svg.append("g")
+          .attr("class", "userSalaryText")
+
+        userSalaryText.append("text")
+          .attr("x", x(userSalary) - 30)
+          .attr("y", -20)
+          .text(sliderFormat.noUiSlider.get() + " €")
+          .attr("fill", "gray");
+
 
       //var min =  d3.max(data, function(d) { return d.q27a; });    
       //var max =  d3.min(data, function(d) { return d.q27a; });    

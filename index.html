@@ -34,8 +34,23 @@
     <div id="calc">
         <button id="playCalc">Vertaa palkkaasi</button>
     </div>
-    <div id ="salary-text" style="display: none;">Tienaat enemmän kuin xx% viestinnän alan palkansaajista.</div>
-    
-    <div id ="salary-topic" style="display: none;">Palkat, kumulatiivinen ()</div>    
-    
+    <div id ="salary-text" style="display: none;">Tienaat enemmän kuin xx% viestinnän alan palkansaajista.</div>    
+    <div id ="salary-topic" style="display: none;">Palkat, kumulatiivinen ()</div>
+    <div id="filter" style="display: none;">
+        <select id="filterValue" class="pinkSelect filter">
+                <option value="kaikki" selected>Kaikki</option>
+                <optgroup label="Organisaation koko">
+                    <option value="alle8000">Alle 8000 henkilöä</option>
+                    <option value="8000+">Yli 8000 henkilöä</option>
+                  </optgroup>
+                <optgroup label="Toimipaikan sijainti">
+                    <option value="pkseutu">Pääkaupunkiseutu</option>
+                    <option value="muusuomi">Muu Suomi</option>
+                  </optgroup>
+                <optgroup label="Asema viestintäyksikössä">
+                    <option value="pkseutu">Pääkaupunkiseutu</option>
+                    <option value="Muu Suomi">Muu Suomi</option>
+                  </optgroup>    
+        </select>
+    </div>
 </body>
