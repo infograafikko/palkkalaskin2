@@ -30,28 +30,79 @@
                 <option value="jarjesto">Järjestö, liitto, säätiö</option>
                 <option value="viestinta">Viestintä-, mainos- ja mediatoimisto</option>        
         </select>
+    <div id="filter">
+            <select id="filterValue" class="pinkSelect filter">
+                    <option value="kaikkifilter" selected>Ei rajauksia</option>
+                    <optgroup label="Organisaation koko">
+                        <option value="alle8000">Alle 8000 henkilöä</option>
+                        <option value="8000+">Yli 8000 henkilöä</option>
+                    </optgroup>
+                    <optgroup label="Toimipaikan sijainti">
+                        <option value="pkseutu">Pääkaupunkiseutu</option>
+                        <option value="muusuomi">Muu Suomi</option>
+                      </optgroup>
+                    <optgroup label="Asema viestintäyksikössä">
+                        <option value="johtaja">Johtaa koko organisaatiota</option>
+                        <option value="ykspaallikkoal">Yksikön päällikkö, alaisia</option>
+                        <option value="esimieseialaisia">Esimies/päällikkö, ei alaisia</option>
+                        <option value="vastaayksin">Vastaa yksin viestinnästä</option>
+                        <option value="alainen">Esimiehen alainen</option>
+                        <option value="toimiimuualla">Toimii muualla organisaatiossa</option>
+                    </optgroup>
+                    <optgroup label="Päätehtävät viestinnässä">
+                        <option value="lehtitoiminta">Lehtien ja julkaisujen toimittaminen</option>
+                        <option value="markkinointiviestinta">Markkinointiviestintä, mainonta, sponsorointi</option>
+                        <option value="maine">Maineen ja brändin rakentaminen</option>
+                        <option value="mediaviestinta">Mediaviestintä ja toimintaympäristön seuranta</option>
+                        <option value="sisainenviestinta">Työyhteisö- / Sisäinen viestintä</option>
+                        <option value="talousviestinta">Sijoittajasuhteet, talousviestintä</option>
+                        <option value="sisallontuotanto">Sisällöntuotanto ja seuranta</option>
+                        <option value="some">Some-asiantuntijatehtävät/yhteisömanagerointi</option>
+                        <option value="viestijohtaminen">Viestinnän johtaminen</option>
+                        <option value="konsultointi">Viestinnän konsultointi, viestintävalmennus, tutkimus ja arviointi</option>
+                        <option value="yhteiskuntasuhteet">Yhteiskuntasuhteet, yhteiskuntavaikuttaminen, lobbaus</option>
+                        <option value="yritysvastuu">Yhteiskunta- tai yritysvastuu, kestävän kehityksen viestintä</option>
+                        <option value="projekti">Projekti- tai hankeviestintä</option>
+                        <option value="muutosviestinta">Muutosviestintä</option>
+                        <option value="asiakasviestinta">Asiakas-/jäsenviestintä</option>
+                        <option value="jokinmuualue">Jokin muu alue</option>
+                    </optgroup> 
+                    <optgroup label="Koulutus">
+                        <option value="amk">AMK</option>
+                        <option value="yliopisto">Ylempi AMK tai ylempi korkeakoulututkinto</option>
+                    </optgroup>
+                    <optgroup label="Viestinnän koulutus">
+                        <option value="paaaineyo">Pääaine yliopistossa tai korkeakoulussa</option>
+                        <option value="paaaineamk">Pääaine ammattikorkeakoulussa</option>
+                        <option value="paaaineopisto">Pääaine opistossa</option>
+                        <option value="sivuaineyo">Sivuaine korkeakoulussa, avoimessa yliopistossa tms.</option>
+                        <option value="sisallontuotanto">Jokin viestinnän johtamisen koulutusohjelma</option>
+                        <option value="some">Jokin tiedottajatutkinto</option>
+                        <option value="viestijohtaminen">Journalismin tai yleisimmin media-alan opintoja joissakin oppilaitoksissa</option>
+                        <option value="konsultointi">Markkinoinnin opintoja joissakin oppilaitoksissa</option>
+                        <option value="yhteiskuntasuhteet">Joitakin muita alaan liittyviä opintoja</option>
+                    </optgroup>
+                    <optgroup label="Sukupuoli">
+                        <option value="nainen">Nainen</option>
+                        <option value="mies">Mies</option>
+                    </optgroup>
+                    <optgroup label="Kokemus viestinnän tehtävistä">
+                        <option value="alle5">Alle 5 vuotta</option>
+                        <option value="510">5-10 vuotta</option>
+                        <option value="1115">11-15 vuotta</option>
+                        <option value="yli15">Yli 15 vuotta</option>
+                    </optgroup>
+                    <optgroup label="Uusi nuori">
+                        <option value="alle30">Alle 30v, 0-3v alalla</option>
+                    </optgroup>
+            </select>
     </div>
     <div id="calc">
         <button id="playCalc">Vertaa palkkaasi</button>
     </div>
     <div id ="salary-text" style="display: none;">Tienaat enemmän kuin xx% viestinnän alan palkansaajista.</div>    
     <div id ="salary-topic" style="display: none;">Palkat, kumulatiivinen ()</div>
-    <div id="filter" style="display: none;">
-        <select id="filterValue" class="pinkSelect filter">
-                <option value="kaikki" selected>Ei rajauksia</option>
-                <optgroup label="Organisaation koko">
-                    <option value="alle8000">Alle 8000 henkilöä</option>
-                    <option value="8000+">Yli 8000 henkilöä</option>
-                  </optgroup>
-                <optgroup label="Toimipaikan sijainti">
-                    <option value="pkseutu">Pääkaupunkiseutu</option>
-                    <option value="muusuomi">Muu Suomi</option>
-                  </optgroup>
-                <optgroup label="Asema viestintäyksikössä">
-                    <option value="pkseutu">Pääkaupunkiseutu</option>
-                    <option value="Muu Suomi">Muu Suomi</option>
-                  </optgroup>    
-        </select>
+    <div id ="salary-details" style="display: none;">Kaikki, ei rajauksia</div>    
     </div>
     <div id="chart"></div>
 </body>

@@ -41,6 +41,10 @@ inputFormat.addEventListener('change', function(){
 //Select option value
 var e = document.getElementById("sektoriValue");
 var sektoriValue = e.options[e.selectedIndex].value;
+var e2 = document.getElementById("filterValue");
+var filterValue = e2.options[e2.selectedIndex].value;
+
+
 
 
 //////////////////////
@@ -105,11 +109,21 @@ var svg = d3.select("div#chart")
   .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 
-    d3.csv("data/palkkadata2.csv", function(error, data) {      
+    d3.csv("data/palkkadata4.csv", function(error, data) {      
       if (error) throw error;
-      
-      //Filter data
 
+      //Kokemus ja ika
+      data.forEach(function(d) {
+        d.q5 = +d.q5;
+        d.q11 = +d.q11;        
+        })
+
+
+      ///////////////
+      //Filter data//
+      ///////////////
+
+        //SEKTORI
         //if viestintatoimisto
         if(sektoriValue == "viestinta") {
           data = data.filter(function (d) { return d.q3 === "3"});          
@@ -117,17 +131,17 @@ var svg = d3.select("div#chart")
 
         //else if yksityinen then...
         else if(sektoriValue == "yksityinen") {
-          data = data.filter(function (d) { return d.q12 === "10000000" | d.q12 === "01000000"});                    
+          data = data.filter(function (d) { return d.q12a === "1" | d.q12b === "1"});                    
         }
 
         //elseif julkinen then...
         else if(sektoriValue == "julkinen") {
-          data = data.filter(function (d) { return d.q12 === "00100000" | d.q12 === "00010000" | d.q12 === "00001000" | d.q12 === "00000100"});                    
+          data = data.filter(function (d) { return d.q12c === "1" | d.q12d === "1" | d.q12e === "1" | d.q12f === "1"});                    
         }
 
         //elseif järjestö, liitto, säätiö then
         else if(sektoriValue == "jarjesto") {
-          data = data.filter(function (d) { return d.q12 === "00000010"});                    
+          data = data.filter(function (d) { return d.q12g === "1"});                    
         }
 
         //else kaikki 
@@ -135,11 +149,143 @@ var svg = d3.select("div#chart")
 
         }
 
+        //RAJAUKSET
+        //Organisaation koko
+        if (filterValue == "alle8000") {
+          data = data.filter(function (d) { return d.q19 !== "8" & d.q19 !== "0" & d.q19 !== "9"; })                              
+        } else if (filterValue == "8000+") {
+          data = data.filter(function (d) { return d.q19 === "8" });                                        
+        } 
+        
+          //Toimipaikan sijainti
+          else if (filterValue == "pkseutu") {
+            data = data.filter(function (d) { return d.q4 === "1"});
+          } else if (filterValue == "pkseutu") {
+            data = data.filter(function (d) { return d.q4 !== "1" & d.q4 !== "0" & d.q4 !== "4"; }) 
+          }
+
+          //Asema viestintäyksikössä
+          else if (filterValue == "johtaja") {
+            data = data.filter(function (d) { return d.q14 === "7"});
+          } else if (filterValue == "ykspaallikkoal") {
+            data = data.filter(function (d) { return d.q14 === "2" & d.q14 === "3" }) 
+          } else if (filterValue == "esimieseialaisia") {
+            data = data.filter(function (d) { return d.q14 === "1" }) 
+          } else if (filterValue == "vastaayksin") {
+            data = data.filter(function (d) { return d.q14 === "4"; }) 
+          } else if (filterValue == "alainen") {
+            data = data.filter(function (d) { return d.q14 === "5"; }) 
+          } else if (filterValue == "toimiimuualla") {
+            data = data.filter(function (d) { return d.q14 === "6"; }) 
+          }
+          
+          //Päätehtävät
+          else if (filterValue == "lehtitoiminta") {
+            data = data.filter(function (d) { return d.q18a === "1"});
+          } else if (filterValue == "markkinointiviestinta") {
+            data = data.filter(function (d) { return d.q18b === "1"}) 
+          } else if (filterValue == "maine") {
+            data = data.filter(function (d) { return d.q18c === "1" }) 
+          } else if (filterValue == "mediaviestinta") {
+            data = data.filter(function (d) { return d.q18d === "1"; }) 
+          } else if (filterValue == "sisainenviestinta") {
+            data = data.filter(function (d) { return d.q18e === "1"; }) 
+          } else if (filterValue == "talousviestinta") {
+            data = data.filter(function (d) { return d.q18f === "1"; }) 
+          } else if (filterValue == "sisallontuotanto") {
+            data = data.filter(function (d) { return d.q18g === "1"}) 
+          } else if (filterValue == "some") {
+            data = data.filter(function (d) { return d.q18h === "1" }) 
+          } else if (filterValue == "viestijohtaminen") {
+            data = data.filter(function (d) { return d.q18i === "1"; }) 
+          } else if (filterValue == "konsultointi") {
+            data = data.filter(function (d) { return d.q18j === "1"; }) 
+          } else if (filterValue == "yhteiskuntasuhteet") {
+            data = data.filter(function (d) { return d.q18k === "1"; }) 
+          } else if (filterValue == "yritysvastuu") {
+            data = data.filter(function (d) { return d.q18l === "1"}) 
+          } else if (filterValue == "projekti") {
+            data = data.filter(function (d) { return d.q18m === "1" }) 
+          } else if (filterValue == "muutosviestinta") {
+            data = data.filter(function (d) { return d.q18n === "1"; }) 
+          } else if (filterValue == "asiakasviestinta") {
+            data = data.filter(function (d) { return d.q18o === "1"; }) 
+          } else if (filterValue == "jokinmuualue") {
+            data = data.filter(function (d) { return d.q18p === "1"; }) 
+          }   
+          
+          //Koulutus
+          else if (filterValue == "amk") {
+            data = data.filter(function (d) { return d.q9 === "4"}) 
+          } else if (filterValue == "yliopisto") {
+            data = data.filter(function (d) { return d.q9 === "5" | d.q9 === "6" | d.q9 === "7"; }) 
+          }
+          
+          //Viestinnan koulutus
+          else if (filterValue == "paaaineyo") {
+            data = data.filter(function (d) { return d.q6a === "1"});
+          } else if (filterValue == "paaaineamk") {
+            data = data.filter(function (d) { return d.q6b === "1"}) 
+          } else if (filterValue == "paaaineopisto") {
+            data = data.filter(function (d) { return d.q6c === "1" }) 
+          } else if (filterValue == "sivuaineyo") {
+            data = data.filter(function (d) { return d.q6d === "1"; }) 
+          } else if (filterValue == "sisallontuotanto") {
+            data = data.filter(function (d) { return d.q6e === "1"; }) 
+          } else if (filterValue == "some") {
+            data = data.filter(function (d) { return d.q6f === "1"; }) 
+          } else if (filterValue == "viestijohtaminen") {
+            data = data.filter(function (d) { return d.q6g === "1"; }) 
+          } else if (filterValue == "konsultointi") {
+            data = data.filter(function (d) { return d.q6h === "1"; }) 
+          } else if (filterValue == "yhteiskuntasuhteet") {
+            data = data.filter(function (d) { return d.q6i === "1"; }) 
+          }
+
+          //Sukupuoli
+          else if (filterValue == "nainen") {
+            data = data.filter(function (d) { return d.q10 === "1"});
+          } else if (filterValue == "mies") {
+            data = data.filter(function (d) { return d.q10 === "2"}) 
+          }   
+
+          //Kokemus
+          else if (filterValue == "alle5") {
+            data = data.filter(function (d) { return d.q5 <  5});
+          } else if (filterValue == "510") {
+            data = data.filter(function (d) { return d.q5 >= 5 & d.q5 <= 10}) 
+          } else if (filterValue == "1115") {
+            data = data.filter(function (d) { return d.q5 >= 11 & d.q5 <= 15 }) 
+          } else if (filterValue == "yli15") {
+            data = data.filter(function (d) { return d.q5 > 15; }) 
+          }
+
+          //Sukupuoli
+          else if (filterValue == "alle30") {
+            data = data.filter(function (d) { return d.q5 <= 3 & d.q11 < 30});
+          } 
+
+        else {
+          
+        }
+
+        //Show data or not
+        if (data.length < 5) {
+          //Display text
+          var editSalarytext = document.getElementById("salary-text");
+          editSalarytext.innerHTML = "Alle 5 havaintoa datassa. Syötä eri rajaukset.";
+          editSalarytext.style.display = "block";
+        } else {
+        
+        
+        
 
       //Convert string to number
       data.forEach(function(d) {
         d.q27a = +d.q27a;
         })
+
+        
 
       //Sort data from smallest to largest
       data.sort(function(x, y){
@@ -152,7 +298,6 @@ var svg = d3.select("div#chart")
         d.cumupct = (100/data.length*i)+(100/data.length);
       })
 
-      console.log(data)
 
       //Count how many smaller values
       var bisectValue = d3.bisector(function(d) { return d.q27a; }).right;
@@ -160,32 +305,37 @@ var svg = d3.select("div#chart")
 
       //Count how many smaller by percentage
       var smallerPCT = (smaller / data.length) * 100;
-      smallerPCT = Math.round(smallerPCT);
+  
 
       var smallerPCTtext;
 
-      if (smallerPCT > 99) {
+      if (smallerPCT > 99 & smallerPCT < 100) {
         smallerPCTtext = "> 99";
-      } else if (smallerPCT < 1) {
+      } else if (smallerPCT < 1 & smallerPCT > 0) {
         smallerPCTtext = "< 1";
-      } else {
-        smallerPCTtext = smallerPCT;
+      } else  {
+        smallerPCTtext = Math.round(smallerPCT);;
       }
+
+      //    smallerPCT = Math.round(smallerPCT);
 
       //Display text
       var editSalarytext = document.getElementById("salary-text");
-      editSalarytext.innerHTML = "Tienaat enemmän kuin " + smallerPCTtext + " % viestinnän alan palkansaajista.";
+      editSalarytext.innerHTML = "Tienaat enemmän kuin " + smallerPCTtext + " % viestinnän alan palkansaajista valitsemillasi rajauksilla.";
       editSalarytext.style.display = "block";
 
       //Display text
       var editSalarytopic = document.getElementById("salary-topic");
-      editSalarytopic.innerHTML = "Viestinnän palkat, kumulatiivinen, % (" + sektoriValue + ")";
+      editSalarytopic.innerHTML = "Viestinnän alan palkat, kumulatiivinen";
       editSalarytopic.style.display = "block";
 
-      //Display filtering
-     // var editSalaryFilter= document.getElementById("filter");
-     // editSalaryFilter.style.display = "block";
-      
+      //Display detail text
+      var editSalarydetails = document.getElementById("salary-details");      
+      var Salarydetails1 = e.options[e.selectedIndex].text;
+      var Salarydetails2 = e2.options[e2.selectedIndex].text;
+      editSalarydetails.innerHTML = Salarydetails1 + " / " + Salarydetails2 + " (n = " + data.length + ")";
+      editSalarydetails.style.display = "block";
+
 
       console.log(data);
       
@@ -312,6 +462,8 @@ var svg = d3.select("div#chart")
       //console.log(med);      
       //console.log(bisectValue(data, 0));
       //console.log(data.length);
+
+    }
       
     })
 
