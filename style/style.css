@@ -125,7 +125,7 @@ select.pinkSelect {
     5px 5px,
     2.5em 2.5em;
   background-repeat: no-repeat;
-  appearance:none;
+  appearance: none;
   -moz-appearance:none; /* Firefox */
   -webkit-appearance:none; /* Safari and Chrome */
 }
@@ -222,4 +222,10 @@ select.pinkSelect {
 .yaxis {
     font-family: "Raleway", sans-serif;
     font-size: 125%;
+}
+
+#palkkataulukko {
+    font-family: "Raleway", sans-serif;
+    font-size: 75%;
+    padding: 3px 3px 3px 3px;
 }

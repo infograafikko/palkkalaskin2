@@ -1,3 +1,11 @@
+var graphData = [];
+var smallerPCT;
+var drawCounter = 0;
+var t = 500;
+
+
+
+
 //Nouislider
 
 window.onload = function() {
@@ -28,25 +36,6 @@ inputFormat.addEventListener('change', function(){
 	sliderFormat.noUiSlider.set(this.value);
 });
 
-  var calcButton = document.getElementById('playCalc');
-  calcButton.onclick = function() {
-
-
-
-    //Convert userSalary to number
-    var userSalary = sliderFormat.noUiSlider.get();
-    userSalary = userSalary.split(' ').join('');
-    userSalary = Number(userSalary);
-
-//Select option value
-var e = document.getElementById("sektoriValue");
-var sektoriValue = e.options[e.selectedIndex].value;
-var e2 = document.getElementById("filterValue");
-var filterValue = e2.options[e2.selectedIndex].value;
-
-
-
-
 //////////////////////
 //Let's use d3.js   //
 //////////////////////
@@ -57,7 +46,7 @@ function getRatio (side) {
 }
 
 // set the dimensions and margins of the graph
-var margin = {left: 42, top: 55, right: 80, bottom: 60}
+var margin = {left: 42, top: 55, right: 80, bottom: 61}
     width = 900;
     height = 400;
 
@@ -71,6 +60,7 @@ var marginRatio = {
 // set the ranges
 var x = d3.scaleLinear().range([0, width]);
 var y = d3.scaleLinear().range([height, 0]);
+
 
 // define the line
 var valueline = d3.line()
@@ -108,21 +98,216 @@ var svg = d3.select("div#chart")
   svg = svg.append("g")
   .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+  
+  var calcButton = document.getElementById('playCalc');
+  
+  /////////////////////
+  //Button is clicked//
+  /////////////////////
+  
+  calcButton.onclick = function() {
+
+  //Convert userSalary to number
+  var userSalary = sliderFormat.noUiSlider.get();
+  userSalary = userSalary.split(' ').join('');
+  userSalary = Number(userSalary);
+
+  //Select option value
+  var e = document.getElementById("sektoriValue");
+  var sektoriValue = e.options[e.selectedIndex].value;
+  var e2 = document.getElementById("filterValue");
+  var filterValue = e2.options[e2.selectedIndex].value;
+
+
 
     d3.csv("data/palkkadata4.csv", function(error, data) {      
       if (error) throw error;
 
-      //Kokemus ja ika
+      //Kokemus, ika ja palkka
       data.forEach(function(d) {
         d.q5 = +d.q5;
-        d.q11 = +d.q11;        
+        d.q11 = +d.q11;    
+        d.q27a = +d.q27a;    
         })
 
 
-      ///////////////
-      //Filter data//
-      ///////////////
+      //////////////////////////////////////
+      //Draw graph for the very first time//
+      //////////////////////////////////////
 
+      if (drawCounter == 0) {
+
+        filterData();
+
+         //Show data or not
+         if (data.length < 5) {
+          //Display text
+          var editSalarytext = document.getElementById("salary-text");
+          editSalarytext.innerHTML = "Alle 5 havaintoa. Syötä eri rajaukset.";
+          editSalarytext.style.display = "block";
+          var graph = document.getElementById("svg-container");          
+          graph.style.display = "none";
+          
+        } else {
+
+        //Sort data from smallest to largest
+        data.sort(function(x, y){
+          return d3.ascending(x.q27a, y.q27a);
+        })
+
+        //Data for the chart
+        data.forEach(function(d,i) {
+          d.palkka = Math.round(d.q27a/100)*100;
+          d.cumupct = (100/data.length*i)+(100/data.length);
+        })
+
+        calcUpdate();
+        drawFirstTime();
+        drawCounter = drawCounter + 1;
+        
+        }
+      } 
+      
+      //////////////////////////////////////
+      //Draw graph for the second+    time//
+      //////////////////////////////////////
+      
+      else {
+        filterData();
+
+         //Show data or not
+         if (data.length < 5) {
+          //Display text
+          var editSalarytext = document.getElementById("salary-text");
+          editSalarytext.innerHTML = "Alle 5 havaintoa. Syötä eri rajaukset.";
+          editSalarytext.style.display = "block";
+          
+          //hide elements
+          var graph = document.getElementById("svg-container");          
+          graph.style.display = "none";
+
+          var salaryTopic = document.getElementById("salary-topic");          
+          salaryTopic.style.display = "none";
+
+          var salaryDetails = document.getElementById("salary-details");          
+          salaryDetails.style.display = "none";
+          
+        } else {
+
+        //Sort data from smallest to largest
+        data.sort(function(x, y){
+          return d3.ascending(x.q27a, y.q27a);
+        })
+
+        //Data for the chart
+        data.forEach(function(d,i) {
+          d.palkka = Math.round(d.q27a/100)*100;
+          d.cumupct = (100/data.length*i)+(100/data.length);
+        })
+
+        calcUpdate();
+
+          //show elements
+          var graph = document.getElementById("svg-container");          
+          graph.style.display = "block";
+
+          var salaryTopic = document.getElementById("salary-topic");          
+          salaryTopic.style.display = "block";
+
+          var salaryDetails = document.getElementById("salary-details");          
+          salaryDetails.style.display = "block";    
+          
+        updateGraph();
+
+      }
+    }
+      
+
+      
+      ///////////////////////
+      //It's time to draw////
+      ///////////////////////
+
+      function drawFirstTime() {
+
+        // Scale the range of the data
+          x.domain(d3.extent(graphData, function(d) { return d.salary; }));
+          y.domain([0, 100]);
+
+          console.log(graphData)
+          
+        // Add the valueline path.
+          svg.append("path")
+          .data([graphData])
+          .attr("class", "line")
+          .attr("d", valueline);
+
+        // Add the area 
+          svg.append("path")
+          .data([graphData])
+          .attr("class", "area")
+          .attr("d", area);
+
+        // Add the X Axis
+        svg.append("g")
+          .attr("class", "xaxis")
+          .attr("transform", "translate(0," + height + ")")
+          .call(d3.axisBottom(x));
+
+        // Add the Y Axis
+        svg.append("g")
+          .call(d3.axisLeft(y))
+          .attr("class", "yaxis")
+        
+        svg.append("line")
+          .attr("class", "userSalaryLine")
+          .attr("y1", -20)
+          .attr("y2", height)
+          .attr("x1", x(userSalary))
+          .attr("x2", x(userSalary));
+
+        // Add the userSalaryCircle
+        svg.append("circle")
+          .attr("class", "userSalaryCircle")
+          .attr("cx", x(userSalary + 5))
+          .attr("cy", y(smallerPCT))
+          .attr("r", 10)
+          .attr("fill", "#e30577");
+    
+        // Add soon to be dynamic features,. pctText
+        svg.append("text")
+          .attr("class", "userPctText")
+          .attr("font-size", "150%")
+          .attr("x", x(userSalary) + 15)
+          .attr("y", y(smallerPCT) + 5)
+          .text(smallerPCTtext + " %");
+          
+        svg.append("rect")
+          .attr("class", "userSalaryRect")
+          .attr("x", x(userSalary) - 60)
+          .attr("y", -45)
+          .attr("width", 120)
+          .attr("height", 35)
+          .attr("fill", "lightgray")
+          .attr("rx", 15)
+          .attr("ry", 15);
+     
+        svg.append("text")
+          .attr("class", "userSalaryText")
+          .attr("x", x(userSalary) - 45)
+          .attr("y", -20)
+          .text(sliderFormat.noUiSlider.get() + " €")
+          .attr("fill", "black")
+          .attr("font-size", "150%");
+
+        }
+
+
+      //////////////////////////
+      //Filter the data////////
+      /////////////////////////
+
+      function filterData() {
         //SEKTORI
         //if viestintatoimisto
         if(sektoriValue == "viestinta") {
@@ -269,45 +454,22 @@ var svg = d3.select("div#chart")
           
         }
 
-        //Show data or not
-        if (data.length < 5) {
-          //Display text
-          var editSalarytext = document.getElementById("salary-text");
-          editSalarytext.innerHTML = "Alle 5 havaintoa datassa. Syötä eri rajaukset.";
-          editSalarytext.style.display = "block";
-        } else {
-        
-        
-        
+       }
 
-      //Convert string to number
-      data.forEach(function(d) {
-        d.q27a = +d.q27a;
-        })
+      //////////////////////////
+      //Calc and update text////
+      //////////////////////////
 
-        
-
-      //Sort data from smallest to largest
-      data.sort(function(x, y){
-        return d3.ascending(x.q27a, y.q27a);
-      })
-
-      //Data for the chart
-      data.forEach(function(d,i) {
-        d.palkka = Math.round(d.q27a/100)*100;
-        d.cumupct = (100/data.length*i)+(100/data.length);
-      })
-
-
-      //Count how many smaller values
+      function calcUpdate() {
+      
+        //Count how many smaller values
       var bisectValue = d3.bisector(function(d) { return d.q27a; }).right;
       var smaller = bisectValue(data, userSalary);
 
       //Count how many smaller by percentage
-      var smallerPCT = (smaller / data.length) * 100;
+      smallerPCT = (smaller / data.length) * 100;
   
 
-      var smallerPCTtext;
 
       if (smallerPCT > 99 & smallerPCT < 100) {
         smallerPCTtext = "> 99";
@@ -326,26 +488,26 @@ var svg = d3.select("div#chart")
 
       //Display text
       var editSalarytopic = document.getElementById("salary-topic");
-      editSalarytopic.innerHTML = "Viestinnän alan palkat, kumulatiivinen";
+      editSalarytopic.innerHTML = "Viestinnän alan palkat, kumulatiivinen (%)";
       editSalarytopic.style.display = "block";
 
       //Display detail text
       var editSalarydetails = document.getElementById("salary-details");      
       var Salarydetails1 = e.options[e.selectedIndex].text;
       var Salarydetails2 = e2.options[e2.selectedIndex].text;
-      editSalarydetails.innerHTML = Salarydetails1 + " / " + Salarydetails2 + " (n = " + data.length + ")";
+      editSalarydetails.innerHTML = Salarydetails1 + " - " + Salarydetails2 + " (n = " + data.length + ")" + " <br /> Mediaani: " + d3.median(data, function(d) { return d.palkka; }) + " €, pienin palkka: " + d3.min(data, function(d) { return d.palkka; }) + " €, suurin palkka: " + d3.max(data, function(d) { return d.palkka; }) + " €";
       editSalarydetails.style.display = "block";
 
 
-      console.log(data);
       
       //////
       //Make dataset for the graph with cumupct and salary rounded to hundreds
       //////
       
       var salaryMax = d3.max(data, function(d) { return d.palkka; });
-      var graphData = [];
       var filterMaxPCT = 0;
+
+      graphData = [];
 
       for (i = 0; i <= salaryMax; i=i+100) {
         var obj = new Object();
@@ -362,112 +524,86 @@ var svg = d3.select("div#chart")
         
         graphData.push(obj)
       }
+      }
 
-      console.log(graphData)
-      
+      //////////////////////////
+      //Update the graph here//
+      //////////////////////////
 
-      
-      ///////////////////////
-      //It's time to draw////
-      ///////////////////////
+      function updateGraph() {
 
-
+        console.log(data);
 
         // Scale the range of the data
-          x.domain(d3.extent(graphData, function(d) { return d.salary; }));
-          y.domain([0, d3.max(graphData, function(d) { return d.cumulativepct; })]);
+        x.domain(d3.extent(graphData, function(d) { return d.salary; }));
 
-        // Add the valueline path.
-          svg.append("path")
-          .data([graphData])
-          .attr("class", "line")
-          .attr("d", valueline);
+        var svg2 = d3.select("div#chart").transition();
 
-        // Add the area 
-          svg.append("path")
-          .data([graphData])
-          .attr("class", "area")
-          .attr("d", area);
+        var updateLine = svg.select(".line").data([graphData]);
+        var updateArea = svg.select(".area").data([graphData]);
+        
 
         // Add the X Axis
-        svg.append("g")
-          .attr("class", "xaxis")
-          .attr("transform", "translate(0," + height + ")")
-          .call(d3.axisBottom(x));
+        svg2.select(".xaxis")
+        .call(d3.axisBottom(x));
 
         // Add the Y Axis
-        svg.append("g")
-          .call(d3.axisLeft(y))
-          .attr("class", "yaxis")
+        svg2.select(".yaxis")
+        .call(d3.axisLeft(y));
 
-        // Add the userSalaryLine
-        var userSalaryLine = svg.append("g")
-          .attr("class", "userSalaryLine");
-        
-        userSalaryLine.append("line")
-          .attr("y1", -20)
-          .attr("y2", height)
+        console.log(graphData)
+
+        updateLine.exit().remove();
+        updateArea.exit().remove();
+
+        // Update the valueline path.
+        updateLine.transition()
+        .duration(t)
+        .attr("d", valueline);
+
+        // Update the area path.
+        updateArea.transition()
+        .duration(t)
+        .attr("d", area);
+
+        //Update user salary line
+        svg2.select(".userSalaryLine")
+          .duration(t)
           .attr("x1", x(userSalary))
           .attr("x2", x(userSalary));
 
-        // Add the userSalaryCircle
-        var userSalaryCircle = svg.append("g")
-        .attr("class", "userSalaryCircle");
-
-        userSalaryCircle.append("circle")
+        // Update userSalaryCircle
+        svg2.select(".userSalaryCircle")
+          .duration(t)
           .attr("cx", x(userSalary + 5))
-          .attr("cy", y(smallerPCT))
-          .attr("r", 10)
-          .attr("fill", "#e30577")
-    
-        // Add soon to be dynamic features,. pctText
-        var userPctText = svg.append("g")
-          .attr("class", "userPctText")
-          .attr("font-size", "150%")
+          .attr("cy", y(smallerPCT));
 
-        userPctText.append("text")
+        // Update PCT text
+        svg2.select(".userPctText")
           .attr("x", x(userSalary) + 15)
           .attr("y", y(smallerPCT) + 5)
-          .text(smallerPCTtext + " %")
-          
-        var userSalaryRect = svg.append("g")
-          .attr("class", "userSalaryRect")
+          .text(smallerPCTtext + " %");
 
-        userSalaryRect.append("rect")
+        svg2.select(".userSalaryRect")
           .attr("x", x(userSalary) - 60)
-          .attr("y", -45)
-          .attr("width", 120)
-          .attr("height", 35)
-          .attr("fill", "lightgray")
-          .attr("rx", 15)
-          .attr("ry", 15)
+          .attr("y", -45);
 
-        
-        var userSalaryText = svg.append("g")
-          .attr("class", "userSalaryText")
-
-        userSalaryText.append("text")
+        svg2.select(".userSalaryText")
           .attr("x", x(userSalary) - 45)
           .attr("y", -20)
-          .text(sliderFormat.noUiSlider.get() + " €")
-          .attr("fill", "black")
-          .attr("font-size", "150%");
+          .text(sliderFormat.noUiSlider.get() + " €");
+        
 
 
-      //var min =  d3.max(data, function(d) { return d.q27a; });    
-      //var max =  d3.min(data, function(d) { return d.q27a; });    
-      //var med =  d3.median(data, function(d) { return d.q27a; });
-      //console.log(min);
-      //console.log(max);
-      //console.log(med);      
-      //console.log(bisectValue(data, 0));
-      //console.log(data.length);
 
-    }
-      
+
+      }
+
     })
+      
+    }
 
   }
 
-}
+
 
