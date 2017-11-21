@@ -87,7 +87,7 @@ var svg = d3.select("div#chart")
   .append("div")
   .attr("id", "svg-container") //container class to make it responsive
   .append("svg")
-  // Add margin to show axes IF MALFUNCTIOINING change 0 to marginRatio.left
+  // Add margin to show axes 
   .style('padding', marginRatio.top + ' ' + marginRatio.right + ' ' + marginRatio.bottom + ' ' + marginRatio.left)
   //responsive SVG needs these 2 attributes and no width and height attr
   .attr("preserveAspectRatio", "xMinYMin meet")
