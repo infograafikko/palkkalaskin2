@@ -46,7 +46,7 @@ function getRatio (side) {
 }
 
 // set the dimensions and margins of the graph
-var margin = {left: 52, top: 55, right: 80, bottom: 61}
+var margin = {left: 60, top: 55, right: 80, bottom: 61}
     width = 900;
     height = 400;
 
@@ -87,8 +87,8 @@ var svg = d3.select("div#chart")
   .append("div")
   .attr("id", "svg-container") //container class to make it responsive
   .append("svg")
-  // Add margin to show axes
-  .style('padding', marginRatio.top + ' ' + marginRatio.right + ' ' + marginRatio.bottom + ' ' + marginRatio.left)
+  // Add margin to show axes IF MALFUNCTIOINING change 0 to marginRatio.left
+  .style('padding', marginRatio.top + ' ' + marginRatio.right + ' ' + marginRatio.bottom + ' ' + 0)
   //responsive SVG needs these 2 attributes and no width and height attr
   .attr("preserveAspectRatio", "xMinYMin meet")
   .attr('viewBox', '0 0 ' + (width + margin.left + margin.right) + ' ' + (height + margin.top + margin.bottom))
@@ -279,9 +279,6 @@ var svg = d3.select("div#chart")
           .attr("cy", y(smallerPCT))
           .attr("r", 10)
           .attr("fill", "#e30577");
-
-          console.log(smallerPCT);
-          console.log(y(smallerPCT));
     
         // Add soon to be dynamic features,. pctText
         toolTip.append("text")
@@ -319,7 +316,7 @@ var svg = d3.select("div#chart")
           .attr("width", 120)
           .attr("height", height + 45)
           .attr("fill", "black")
-          .attr("opacity", 0.0)
+          .attr("opacity", 0.2)
           .call(d3.drag()
           .on("start", dragstarted)
           .on("drag", dragged)
@@ -331,7 +328,8 @@ var svg = d3.select("div#chart")
           d3.select(this).select(".draggingBox").raise().classed("active", true);
         }
         
-        function dragged() {
+        function dragged(d) {
+
 
           //Count toolTipSlary when dragging
           var toolTipSalary = x.invert(d3.event.x - 50);
@@ -349,13 +347,13 @@ var svg = d3.select("div#chart")
             circlePctText = Math.round(circlePct);;
           }
 
+
           d3.select(".draggingBox").attr("x", d3.event.x - 110);
           d3.select(".userSalaryLine").attr("x1", d3.event.x - 48).attr("x2", d3.event.x - 48);
           d3.select(".userSalaryRect").attr("x", d3.event.x - 110).attr("x2", d3.event.x - 50);
           d3.select(".userSalaryText").attr("x", d3.event.x - 95).text(toolTipSalaryText);
           d3.select(".userPctText").attr("x", d3.event.x - 25).attr("y", y(circlePct) + 5).text(circlePctText + " %");
           d3.select(".userSalaryCircle").attr("cx", d3.event.x - 50).attr("cy", y(circlePct));
-
 
           
         }
@@ -656,8 +654,7 @@ var svg = d3.select("div#chart")
           .text(sliderFormat.noUiSlider.get() + " €");
         
         svg2.select(".draggingBox")
-          .attr("x", x(userSalary) - 60)
-          .attr("y", -45);
+          .attr("x", x(userSalary) - 60);
 
 
       }

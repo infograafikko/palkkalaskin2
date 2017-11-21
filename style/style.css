@@ -151,7 +151,7 @@ select.pinkSelect {
 }
 
 #salary-topic {
-    margin-top:40px;
+    margin-top:20px;
     font-size: 125%;
 }
 
@@ -207,11 +207,13 @@ select.pinkSelect {
     width: 100%;
     padding-bottom: 100%;
     overflow: hidden;
+    margin-left: 0px;
 }
 #svg-content-responsive {
     position: absolute;
     top: 0;
     left: 0;
+    margin-left: 0px;
 }
 
 .xaxis {
@@ -224,11 +226,6 @@ select.pinkSelect {
     font-size: 125%;
 }
 
-#palkkataulukko {
-    font-family: "Raleway", sans-serif;
-    font-size: 75%;
-    padding: 3px 3px 3px 3px;
-}
 
 .draggingBox {
     cursor: col-resize;
