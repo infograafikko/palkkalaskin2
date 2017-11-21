@@ -46,7 +46,7 @@ function getRatio (side) {
 }
 
 // set the dimensions and margins of the graph
-var margin = {left: 60, top: 55, right: 80, bottom: 61}
+var margin = {left: 60, top: 55, right: 140, bottom: 30}
     width = 900;
     height = 400;
 
@@ -88,7 +88,7 @@ var svg = d3.select("div#chart")
   .attr("id", "svg-container") //container class to make it responsive
   .append("svg")
   // Add margin to show axes IF MALFUNCTIOINING change 0 to marginRatio.left
-  .style('padding', marginRatio.top + ' ' + marginRatio.right + ' ' + marginRatio.bottom + ' ' + 0)
+  .style('padding', marginRatio.top + ' ' + marginRatio.right + ' ' + marginRatio.bottom + ' ' + marginRatio.left)
   //responsive SVG needs these 2 attributes and no width and height attr
   .attr("preserveAspectRatio", "xMinYMin meet")
   .attr('viewBox', '0 0 ' + (width + margin.left + margin.right) + ' ' + (height + margin.top + margin.bottom))
@@ -316,7 +316,7 @@ var svg = d3.select("div#chart")
           .attr("width", 120)
           .attr("height", height + 45)
           .attr("fill", "black")
-          .attr("opacity", 0.2)
+          .attr("opacity", 0.0)
           .call(d3.drag()
           .on("start", dragstarted)
           .on("drag", dragged)
