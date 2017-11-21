@@ -46,7 +46,7 @@ function getRatio (side) {
 }
 
 // set the dimensions and margins of the graph
-var margin = {left: 42, top: 55, right: 80, bottom: 61}
+var margin = {left: 52, top: 55, right: 80, bottom: 61}
     width = 900;
     height = 400;
 
@@ -97,6 +97,7 @@ var svg = d3.select("div#chart")
 
   svg = svg.append("g")
   .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
 
   
   var calcButton = document.getElementById('playCalc');
@@ -242,6 +243,7 @@ var svg = d3.select("div#chart")
           .attr("class", "line")
           .attr("d", valueline);
 
+
         // Add the area 
           svg.append("path")
           .data([graphData])
@@ -259,7 +261,11 @@ var svg = d3.select("div#chart")
           .call(d3.axisLeft(y))
           .attr("class", "yaxis")
         
-        svg.append("line")
+
+        var toolTip = svg.append("g")
+        .attr("class", "toolTip");
+          
+        toolTip.append("line")
           .attr("class", "userSalaryLine")
           .attr("y1", -20)
           .attr("y2", height)
@@ -267,22 +273,25 @@ var svg = d3.select("div#chart")
           .attr("x2", x(userSalary));
 
         // Add the userSalaryCircle
-        svg.append("circle")
+        toolTip.append("circle")
           .attr("class", "userSalaryCircle")
           .attr("cx", x(userSalary + 5))
           .attr("cy", y(smallerPCT))
           .attr("r", 10)
           .attr("fill", "#e30577");
+
+          console.log(smallerPCT);
+          console.log(y(smallerPCT));
     
         // Add soon to be dynamic features,. pctText
-        svg.append("text")
+        toolTip.append("text")
           .attr("class", "userPctText")
           .attr("font-size", "150%")
           .attr("x", x(userSalary) + 15)
           .attr("y", y(smallerPCT) + 5)
           .text(smallerPCTtext + " %");
           
-        svg.append("rect")
+        toolTip.append("rect")
           .attr("class", "userSalaryRect")
           .attr("x", x(userSalary) - 60)
           .attr("y", -45)
@@ -292,7 +301,7 @@ var svg = d3.select("div#chart")
           .attr("rx", 15)
           .attr("ry", 15);
      
-        svg.append("text")
+        toolTip.append("text")
           .attr("class", "userSalaryText")
           .attr("x", x(userSalary) - 45)
           .attr("y", -20)
@@ -300,6 +309,59 @@ var svg = d3.select("div#chart")
           .attr("fill", "black")
           .attr("font-size", "150%");
 
+
+        //Let's make invisible dragging box
+
+        toolTip.append("rect")
+          .attr("class", "draggingBox")
+          .attr("x", x(userSalary) - 60)
+          .attr("y", -45)
+          .attr("width", 120)
+          .attr("height", height + 45)
+          .attr("fill", "black")
+          .attr("opacity", 0.0)
+          .call(d3.drag()
+          .on("start", dragstarted)
+          .on("drag", dragged)
+          .on("end", dragended));
+
+        }
+
+        function dragstarted(d) {
+          d3.select(this).select(".draggingBox").raise().classed("active", true);
+        }
+        
+        function dragged() {
+
+          //Count toolTipSlary when dragging
+          var toolTipSalary = x.invert(d3.event.x - 50);
+              toolTipSalary = Math.round(toolTipSalary/100)*100;
+          var toolTipSalaryText = toolTipSalary.toLocaleString() + " €";
+
+          var circlePct = graphData.find(y => y.salary === toolTipSalary).cumulativepct;
+          var circlePctText;
+          
+          if (circlePct > 99 & circlePct < 100) {
+            circlePctText = "> 99";
+          } else if (circlePct < 1 & circlePct > 0) {
+            circlePctText = "< 1";
+          } else  {
+            circlePctText = Math.round(circlePct);;
+          }
+
+          d3.select(".draggingBox").attr("x", d3.event.x - 110);
+          d3.select(".userSalaryLine").attr("x1", d3.event.x - 48).attr("x2", d3.event.x - 48);
+          d3.select(".userSalaryRect").attr("x", d3.event.x - 110).attr("x2", d3.event.x - 50);
+          d3.select(".userSalaryText").attr("x", d3.event.x - 95).text(toolTipSalaryText);
+          d3.select(".userPctText").attr("x", d3.event.x - 25).attr("y", y(circlePct) + 5).text(circlePctText + " %");
+          d3.select(".userSalaryCircle").attr("cx", d3.event.x - 50).attr("cy", y(circlePct));
+
+
+          
+        }
+        
+        function dragended(d) {
+          d3.select(this).select(".draggingBox").classed("active", false);
         }
 
 
@@ -593,8 +655,9 @@ var svg = d3.select("div#chart")
           .attr("y", -20)
           .text(sliderFormat.noUiSlider.get() + " €");
         
-
-
+        svg2.select(".draggingBox")
+          .attr("x", x(userSalary) - 60)
+          .attr("y", -45);
 
 
       }
