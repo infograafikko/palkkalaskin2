@@ -256,11 +256,24 @@ var svg = d3.select("div#chart")
           .attr("transform", "translate(0," + height + ")")
           .call(d3.axisBottom(x));
 
+        // Add the X Axis labels
+        svg.append("text")
+          .attr("class", "xaxislabel")
+          .attr("x", -5)
+          .attr("y", -6)
+          .text("%");
+
         // Add the Y Axis
         svg.append("g")
           .call(d3.axisLeft(y))
           .attr("class", "yaxis")
-        
+
+        // Add the Y Axis labels
+        svg.append("text")
+        .attr("class", "xaxislabel")
+        .attr("x", width + 5 )
+        .attr("y", height + 6)
+        .text("€");        
 
         var toolTip = svg.append("g")
         .attr("class", "toolTip")
@@ -329,7 +342,7 @@ var svg = d3.select("div#chart")
           .attr("width", 120)
           .attr("height", height + 45)
           .attr("fill", "black")
-          .attr("opacity", 0.2)
+          .attr("opacity", 0.0)
           .call(draggable);
 
         }
