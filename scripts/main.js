@@ -263,7 +263,11 @@ var svg = d3.select("div#chart")
         
 
         var toolTip = svg.append("g")
-        .attr("class", "toolTip");
+        .attr("class", "toolTip")
+        .call(d3.drag()
+        .on("start", dragstarted)
+        .on("drag", dragged)
+        .on("end", dragended));
           
         toolTip.append("line")
           .attr("class", "userSalaryLine")
@@ -316,11 +320,7 @@ var svg = d3.select("div#chart")
           .attr("width", 120)
           .attr("height", height + 45)
           .attr("fill", "black")
-          .attr("opacity", 0.0)
-          .call(d3.drag()
-          .on("start", dragstarted)
-          .on("drag", dragged)
-          .on("end", dragended));
+          .attr("opacity", 0.2);
 
         }
 
@@ -328,7 +328,7 @@ var svg = d3.select("div#chart")
           d3.select(this).select(".draggingBox").raise().classed("active", true);
         }
         
-        function dragged(d) {
+        function dragged(mockData) {
 
 
           //Count toolTipSlary when dragging
@@ -348,12 +348,12 @@ var svg = d3.select("div#chart")
           }
 
 
-          d3.select(".draggingBox").attr("x", d3.event.x - 110);
-          d3.select(".userSalaryLine").attr("x1", d3.event.x - 48).attr("x2", d3.event.x - 48);
-          d3.select(".userSalaryRect").attr("x", d3.event.x - 110).attr("x2", d3.event.x - 50);
-          d3.select(".userSalaryText").attr("x", d3.event.x - 95).text(toolTipSalaryText);
-          d3.select(".userPctText").attr("x", d3.event.x - 25).attr("y", y(circlePct) + 5).text(circlePctText + " %");
-          d3.select(".userSalaryCircle").attr("cx", d3.event.x - 50).attr("cy", y(circlePct));
+          d3.select(this).select(".draggingBox").attr("x", d3.event.x - 130);
+          d3.select(this).select(".userSalaryLine").attr("x1", d3.event.x - 68).attr("x2", d3.event.x - 68);
+          d3.select(this).select(".userSalaryRect").attr("x", d3.event.x - 130).attr("x2", d3.event.x - 70);
+          d3.select(this).select(".userSalaryText").attr("x", d3.event.x - 115).text(toolTipSalaryText);
+          d3.select(this).select(".userPctText").attr("x", d3.event.x - 45).attr("y", y(circlePct) + 5).text(circlePctText + " %");
+          d3.select(this).select(".userSalaryCircle").attr("cx", d3.event.x - 70).attr("cy", y(circlePct));
 
           
         }
