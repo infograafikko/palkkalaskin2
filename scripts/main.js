@@ -351,10 +351,12 @@ var svg = d3.select("div#chart")
             circlePctText = Math.round(circlePct);;
           }
 
+          
 
-          d3.select(this).select(".draggingBox").attr("transform", function(d) { return "translate(" + [d3.event.x - 240,0] + ")"});
+
+          d3.select(this).select(".draggingBox").attr("x", d3.event.x - 110).attr("transform, translate(0,0)");
           d3.select(this).select(".userSalaryLine").attr("x1", d3.event.x - 48).attr("x2", d3.event.x - 48);
-          d3.select(this).select(".userSalaryRect").attr("x", d3.event.x - 110).attr("x2", d3.event.x - 50);
+          d3.select(this).select(".userSalaryRect").attr("x", d3.event.x - 110);
           d3.select(this).select(".userSalaryText").attr("x", d3.event.x - 95).text(toolTipSalaryText);
           d3.select(this).select(".userPctText").attr("x", d3.event.x - 25).attr("y", y(circlePct) + 5).text(circlePctText + " %");
           d3.select(this).select(".userSalaryCircle").attr("cx", d3.event.x - 50).attr("cy", y(circlePct));
