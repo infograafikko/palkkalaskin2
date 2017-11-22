@@ -264,10 +264,19 @@ var svg = d3.select("div#chart")
 
         var toolTip = svg.append("g")
         .attr("class", "toolTip")
-        .call(d3.drag()
+        .data([{x: 0, y: 0}]);
+        //.call(draggable);
+        
+        var draggable = d3.drag()
+        .subject(function() {
+          var th = d3.select(this);
+          
+          return {x: th.attr("x"), y: th.attr("y")}
+        })
         .on("start", dragstarted)
         .on("drag", dragged)
-        .on("end", dragended));
+        .on("end", dragended);
+
           
         toolTip.append("line")
           .attr("class", "userSalaryLine")
@@ -320,7 +329,8 @@ var svg = d3.select("div#chart")
           .attr("width", 120)
           .attr("height", height + 45)
           .attr("fill", "black")
-          .attr("opacity", 0.2);
+          .attr("opacity", 0.2)
+          .call(draggable);
 
         }
 
@@ -331,7 +341,7 @@ var svg = d3.select("div#chart")
         function dragged(d) {
 
           //Count toolTipSlary when dragging
-          var toolTipSalary = x.invert(d3.event.x - 50);
+          var toolTipSalary = x.invert(d3.event.x + 60);
               toolTipSalary = Math.round(toolTipSalary/100)*100;
           var toolTipSalaryText = toolTipSalary.toLocaleString() + " €";
 
@@ -346,15 +356,12 @@ var svg = d3.select("div#chart")
             circlePctText = Math.round(circlePct);;
           }
 
-          console.log(d3.event.x);
-
-
-          d3.select(this).select(".draggingBox").attr("x", d3.event.x - 110);
-          d3.select(this).select(".userSalaryLine").attr("x1", d3.event.x - 48).attr("x2", d3.event.x - 48);
-          d3.select(this).select(".userSalaryRect").attr("x", d3.event.x - 110);
-          d3.select(this).select(".userSalaryText").attr("x", d3.event.x - 95).text(toolTipSalaryText);
-          d3.select(this).select(".userPctText").attr("x", d3.event.x - 25).attr("y", y(circlePct) + 5).text(circlePctText + " %");
-          d3.select(this).select(".userSalaryCircle").attr("cx", d3.event.x - 50).attr("cy", y(circlePct));
+          d3.select(this).attr("x", d3.event.x);
+          d3.select(".userSalaryLine").attr("x1", d3.event.x + 60).attr("x2", d3.event.x + 60);
+          d3.select(".userSalaryRect").attr("x", d3.event.x);
+          d3.select(".userSalaryText").attr("x", d3.event.x + 15).text(toolTipSalaryText);
+          d3.select(".userPctText").attr("x", d3.event.x + 75).attr("y", y(circlePct) + 5).text(circlePctText + " %");
+          d3.select(".userSalaryCircle").attr("cx", d3.event.x + 60).attr("cy", y(circlePct));
           
         }
         
@@ -555,7 +562,7 @@ var svg = d3.select("div#chart")
       var editSalarydetails = document.getElementById("salary-details");      
       var Salarydetails1 = e.options[e.selectedIndex].text;
       var Salarydetails2 = e2.options[e2.selectedIndex].text;
-      editSalarydetails.innerHTML = Salarydetails1 + " - " + Salarydetails2 + " (n = " + data.length + ")" + " <br /> Mediaani: " + d3.median(data, function(d) { return d.palkka; }) + " €, pienin palkka: " + d3.min(data, function(d) { return d.palkka; }) + " €, suurin palkka: " + d3.max(data, function(d) { return d.palkka; }) + " €";
+      editSalarydetails.innerHTML = Salarydetails1 + " - " + Salarydetails2 + " (n = " + data.length + ")" + " <br /> Mediaani: " + d3.median(data, function(d) { return d.palkka; }).toLocaleString() + " €, pienin palkka: " + d3.min(data, function(d) { return d.palkka; }).toLocaleString() + " €, suurin palkka: " + d3.max(data, function(d) { return d.palkka; }).toLocaleString() + " €";
       editSalarydetails.style.display = "block";
 
 
