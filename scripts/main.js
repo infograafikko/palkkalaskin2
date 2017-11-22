@@ -349,12 +349,12 @@ var svg = d3.select("div#chart")
           
 
 
-          d3.select(this).select(".draggingBox").attr("transform", "translate(" + (d3.event.x - 90) + ", 0)");
-          d3.select(this).select(".userSalaryRect").attr("transform", "translate(" + (d3.event.x - 90) + ", 0)");
-          d3.select(this).select(".userSalaryLine").attr("transform", "translate(" + (d3.event.x - 90) + ", 0)");
-          d3.select(this).select(".userSalaryText").attr("transform", "translate(" + (d3.event.x - 90) + ", 0)").text(toolTipSalaryText);
-          d3.select(this).select(".userPctText").attr("transform", "translate(" + (d3.event.x - 90) + ", 0)").attr("y", y(circlePct) + 5).text(circlePctText + " %");
-          d3.select(this).select(".userSalaryCircle").attr("transform", "translate(" + (d3.event.x - 90) + ", 0)").attr("cy", y(circlePct));
+          d3.select(this).select(".draggingBox").attr("transform", "translate(" + (d3.event.x - 150) + ", 0)");
+          d3.select(this).select(".userSalaryRect").attr("transform", "translate(" + (d3.event.x - 150) + ", 0)");
+          d3.select(this).select(".userSalaryLine").attr("transform", "translate(" + (d3.event.x - 150) + ", 0)");
+          d3.select(this).select(".userSalaryText").attr("transform", "translate(" + (d3.event.x - 150) + ", 0)").text(toolTipSalaryText);
+          d3.select(this).select(".userPctText").attr("transform", "translate(" + (d3.event.x - 150) + ", 0)").attr("y", y(circlePct) + 5).text(circlePctText + " %");
+          d3.select(this).select(".userSalaryCircle").attr("transform", "translate(" + (d3.event.x - 150) + ", 0)").attr("cy", y(circlePct));
 
           
         }
