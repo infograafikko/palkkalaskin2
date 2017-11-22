@@ -207,13 +207,11 @@ select.pinkSelect {
     width: 100%;
     padding-bottom: 100%;
     overflow: hidden;
-    margin-left: 0px;
 }
 #svg-content-responsive {
     position: absolute;
     top: 0;
     left: 0;
-    margin-left: 0px;
 }
 
 .xaxis {

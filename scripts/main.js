@@ -346,7 +346,7 @@ var svg = d3.select("div#chart")
             circlePctText = Math.round(circlePct);;
           }
 
-          
+          console.log(d3.event.x);
 
 
           d3.select(this).select(".draggingBox").attr("x", d3.event.x - 110);
