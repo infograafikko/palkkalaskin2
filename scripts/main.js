@@ -330,14 +330,9 @@ var svg = d3.select("div#chart")
         
         function dragged(d) {
 
-          console.log(d3.event.dx);
-          console.log(d3.event.x);
-          console.log(userSalary);
-
           //Count toolTipSlary when dragging
           var toolTipSalary = x.invert(d3.event.x - 50);
               toolTipSalary = Math.round(toolTipSalary/100)*100;
-              userSalary = toolTipSalary;
           var toolTipSalaryText = toolTipSalary.toLocaleString() + " €";
 
           var circlePct = graphData.find(y => y.salary === toolTipSalary).cumulativepct;
@@ -354,12 +349,10 @@ var svg = d3.select("div#chart")
           
 
 
-          d3.select(this).select(".draggingBox").attr("x", d3.event.x - 110).attr("transform, translate(0,0)");
-          d3.select(this).select(".userSalaryLine").attr("x1", d3.event.x - 48).attr("x2", d3.event.x - 48);
-          d3.select(this).select(".userSalaryRect").attr("x", d3.event.x - 110);
-          d3.select(this).select(".userSalaryText").attr("x", d3.event.x - 95).text(toolTipSalaryText);
-          d3.select(this).select(".userPctText").attr("x", d3.event.x - 25).attr("y", y(circlePct) + 5).text(circlePctText + " %");
-          d3.select(this).select(".userSalaryCircle").attr("cx", d3.event.x - 50).attr("cy", y(circlePct));
+          d3.select(this).attr("transform", "translate(" + (d3.event.x - 240) + ", 0)");
+          d3.select(this).select(".userSalaryText").text(toolTipSalaryText);
+          d3.select(this).select(".userPctText").attr("y", y(circlePct) + 5).text(circlePctText + " %");
+          d3.select(this).select(".userSalaryCircle").attr("cy", y(circlePct));
 
           
         }
