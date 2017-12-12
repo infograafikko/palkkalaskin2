@@ -2,8 +2,17 @@ var graphData = [];
 var smallerPCT;
 var drawCounter = 0;
 var t = 500;
+var histogram;
+var tickCount = 30;
 
+//Locale settings
+var myLocale = d3.formatLocale({
+  "decimal": ",",
+  "thousands": " ",//just put a space here
+  "grouping": [3]
+});
 
+var myFormat = myLocale.format(",")
 
 
 //Nouislider
@@ -46,7 +55,7 @@ function getRatio (side) {
 }
 
 // set the dimensions and margins of the graph
-var margin = {left: 60, top: 55, right: 140, bottom: 30}
+var margin = {left: 50, top: 55, right: 140, bottom: 30}
     width = 900;
     height = 400;
 
@@ -60,6 +69,7 @@ var marginRatio = {
 // set the ranges
 var x = d3.scaleLinear().range([0, width]);
 var y = d3.scaleLinear().range([height, 0]);
+var yHist = d3.scaleLinear().range([height, 0]);
 
 
 // define the line
@@ -69,12 +79,13 @@ var valueline = d3.line()
     .curve(d3.curveBasis);
 
 
+
 // define the area
-var area = d3.area()
-    .x(function(d) { return x(d.salary); })
-    .y0(height)
-    .y1(function(d) { return y(d.cumulativepct); })
-    .curve(d3.curveBasis);
+//var area = d3.area()
+//    .x(function(d) { return x(d.salary); })
+//    .y0(height)
+//    .y1(function(d) { return y(d.cumulativepct); })
+//    .curve(d3.curveBasis);
     
 //Bisector for tooltip
 var bisectSalary = d3.bisector(function(d) { return d.salary; }).left;
@@ -235,7 +246,30 @@ var svg = d3.select("div#chart")
           x.domain(d3.extent(graphData, function(d) { return d.salary; }));
           y.domain([0, 100]);
 
+          // set the parameters for the histogram
+          histogram = d3.histogram()
+            .value(function(d) { return d.q27a; })
+            .domain(x.domain())
+            .thresholds(x.ticks(tickCount));
+
+          // group the data for the bars
+          var bins = histogram(data);
+          yHist.domain([0, data.length]);          
+
+          console.log(bins);
+
           console.log(graphData)
+
+        // Add the histogram
+        svg.selectAll("rect")
+        .data(bins)
+        .enter().append("rect")
+          .attr("class", "histogram")
+          .attr("x", 1)
+          .attr("transform", function(d) {
+            return "translate(" + x(d.x0) + "," + yHist(d.length) + ")"; })
+            .attr("width", function(d) { return x(d.x1) - x(d.x0) -1 ; })
+            .attr("height", function(d) { return height - yHist(d.length); });
           
         // Add the valueline path.
           svg.append("path")
@@ -245,16 +279,17 @@ var svg = d3.select("div#chart")
 
 
         // Add the area 
-          svg.append("path")
-          .data([graphData])
-          .attr("class", "area")
-          .attr("d", area);
+      //    svg.append("path")
+      //    .data([graphData])
+      //    .attr("class", "area")
+      //    .attr("d", area);
 
         // Add the X Axis
         svg.append("g")
           .attr("class", "xaxis")
           .attr("transform", "translate(0," + height + ")")
-          .call(d3.axisBottom(x));
+          .call(d3.axisBottom(x)
+            .tickFormat(function(d) { return myFormat(d);}));
 
         // Add the X Axis labels
         svg.append("text")
@@ -265,8 +300,10 @@ var svg = d3.select("div#chart")
 
         // Add the Y Axis
         svg.append("g")
-          .call(d3.axisLeft(y))
-          .attr("class", "yaxis")
+         .attr("class", "yaxis")
+          .call(d3.axisLeft(y)
+          .tickFormat(function(d) { return myFormat(d);}));
+
 
         // Add the Y Axis labels
         svg.append("text")
@@ -278,7 +315,6 @@ var svg = d3.select("div#chart")
         var toolTip = svg.append("g")
         .attr("class", "toolTip")
         .data([{x: 0, y: 0}]);
-        //.call(draggable);
         
         var draggable = d3.drag()
         .subject(function() {
@@ -356,7 +392,7 @@ var svg = d3.select("div#chart")
           //Count toolTipSlary when dragging
           var toolTipSalary = x.invert(d3.event.x + 60);
               toolTipSalary = Math.round(toolTipSalary/100)*100;
-          var toolTipSalaryText = toolTipSalary.toLocaleString() + " €";
+          var toolTipSalaryText = myFormat(toolTipSalary) + " €";
 
           var circlePct = graphData.find(y => y.salary === toolTipSalary).cumulativepct;
           var circlePctText;
@@ -575,7 +611,7 @@ var svg = d3.select("div#chart")
       var editSalarydetails = document.getElementById("salary-details");      
       var Salarydetails1 = e.options[e.selectedIndex].text;
       var Salarydetails2 = e2.options[e2.selectedIndex].text;
-      editSalarydetails.innerHTML = Salarydetails1 + " - " + Salarydetails2 + " (n = " + data.length + ")" + " <br /> Mediaani: " + d3.median(data, function(d) { return d.palkka; }).toLocaleString() + " €, pienin palkka: " + d3.min(data, function(d) { return d.palkka; }).toLocaleString() + " €, suurin palkka: " + d3.max(data, function(d) { return d.palkka; }).toLocaleString() + " €";
+      editSalarydetails.innerHTML = Salarydetails1 + " - " + Salarydetails2 + " (n = " + data.length + ")" + " <br /> Mediaani: " + myFormat(d3.median(data, function(d) { return d.palkka; })) + " €, pienin palkka: " + myFormat(d3.min(data, function(d) { return d.palkka; })) + " €, suurin palkka: " + myFormat(d3.max(data, function(d) { return d.palkka; })) + " €";
       editSalarydetails.style.display = "block";
 
 
@@ -612,15 +648,21 @@ var svg = d3.select("div#chart")
 
       function updateGraph() {
 
-        console.log(data);
+        console.log(data.length);
+
+         // group the data for the bars
+         var bins = histogram(data);
 
         // Scale the range of the data
         x.domain(d3.extent(graphData, function(d) { return d.salary; }));
+        yHist.domain([0, data.length]);          
+        
 
         var svg2 = d3.select("div#chart").transition();
 
         var updateLine = svg.select(".line").data([graphData]);
-        var updateArea = svg.select(".area").data([graphData]);
+//        var updateArea = svg.select(".area").data([graphData]);
+        var updateHist = svg.selectAll(".histogram").data(bins);
         
 
         // Add the X Axis
@@ -634,17 +676,27 @@ var svg = d3.select("div#chart")
         console.log(graphData)
 
         updateLine.exit().remove();
-        updateArea.exit().remove();
+//        updateArea.exit().remove();
+        updateHist.exit().remove();
 
         // Update the valueline path.
         updateLine.transition()
         .duration(t)
         .attr("d", valueline);
 
-        // Update the area path.
-        updateArea.transition()
+        updateHist.transition()
         .duration(t)
-        .attr("d", area);
+        .attr("x", 1)
+        .attr("transform", function(d) {
+          return "translate(" + x(d.x0) + "," + yHist(d.length) + ")"; })
+          .attr("width", function(d) { return x(d.x1) - x(d.x0) -1 ; })
+          .attr("height", function(d) { return height - yHist(d.length); });
+        
+
+        // Update the area path.
+//        updateArea.transition()
+//        .duration(t)
+//        .attr("d", area);
 
         //Update user salary line
         svg2.select(".userSalaryLine")
