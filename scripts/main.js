@@ -3,7 +3,7 @@ var smallerPCT;
 var drawCounter = 0;
 var t = 500;
 var histogram;
-var tickCount = 30;
+var tickCount = 20;
 
 //Locale settings
 var myLocale = d3.formatLocale({
@@ -86,9 +86,6 @@ var valueline = d3.line()
 //    .y0(height)
 //    .y1(function(d) { return y(d.cumulativepct); })
 //    .curve(d3.curveBasis);
-    
-//Bisector for tooltip
-var bisectSalary = d3.bisector(function(d) { return d.salary; }).left;
 
 // append the svg obgect to the body of the page
 // appends a 'group' element to 'svg'
@@ -654,7 +651,7 @@ var svg = d3.select("div#chart")
          var bins = histogram(data);
 
         // Scale the range of the data
-        x.domain(d3.extent(graphData, function(d) { return d.salary; }));
+        x.domain([0, d3.max(graphData, function(d) { return d.salary; })]);
         yHist.domain([0, data.length]);          
         
 
@@ -667,11 +664,13 @@ var svg = d3.select("div#chart")
 
         // Add the X Axis
         svg2.select(".xaxis")
-        .call(d3.axisBottom(x));
+        .call(d3.axisBottom(x)
+          .tickFormat(function(d) { return myFormat(d);}));
 
         // Add the Y Axis
         svg2.select(".yaxis")
-        .call(d3.axisLeft(y));
+        .call(d3.axisLeft(y)
+          .tickFormat(function(d) { return myFormat(d);}));
 
         console.log(graphData)
 
